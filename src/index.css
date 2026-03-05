@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: theme('colors.background.DEFAULT');
+    color: theme('colors.foreground.DEFAULT');
+    font-family: theme('fontFamily.sans');
+    line-height: 1.5;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  ::selection {
+    background: theme('colors.accent.DEFAULT');
+    color: #fff;
+  }
+}
+
+@layer utilities {
+  .font-mono {
+    font-family: theme('fontFamily.mono');
+  }
+
+  /* Drag and drop styles */
+  .drag-over {
+    background-color: theme('colors.accent.DEFAULT');
+    opacity: 0.1;
+  }
+
+  .dragging {
+    opacity: 0.5;
+    transform: rotate(2deg);
+  }
+
+  /* Mobile touch targets */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
