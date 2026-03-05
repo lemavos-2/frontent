@@ -1,3 +1,4 @@
+import React from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 
@@ -5,7 +6,7 @@ export function JournalEditor({ content, onUpdate }: { content: string; onUpdate
   const editor = useEditor({
     extensions: [StarterKit],
     content,
-    onUpdate: ({ editor }) => onUpdate(editor.getHTML()),
+    onUpdate: ({ editor }: { editor: any }) => onUpdate(editor.getHTML()),
   });
 
   return (

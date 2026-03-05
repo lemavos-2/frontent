@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { NoteList } from "@/components/journal/NoteList";
 import { JournalEditor } from "@/components/journal/JournalEditor";
 
@@ -7,8 +8,8 @@ const notes = [
 ];
 
 export default function JournalPage() {
-  const [selected, setSelected] = React.useState(notes[0].title);
-  const [content, setContent] = React.useState("<p>Conteúdo da nota</p>");
+  const [selected, setSelected] = useState(notes[0].title);
+  const [content, setContent] = useState("<p>Conteúdo da nota</p>");
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
