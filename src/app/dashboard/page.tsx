@@ -12,12 +12,14 @@ export default function DashboardPage() {
     { id: "2", text: "Hábito concluído", timestamp: "Hoje 09:30" },
   ];
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      {stats.map((stat) => (
-        <StatsCard key={stat.title} {...stat} />
-      ))}
+    <div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {stats.map((stat) => (
+          <StatsCard key={stat.title} {...stat} />
+        ))}
+      </div>
+      <h2 className="text-[22px] font-semibold tracking-tight mb-4">Atividade recente</h2>
+      <ActivityFeed items={activities} />
     </div>
-    <h2 className="text-[22px] font-semibold tracking-tight mb-4">Atividade recente</h2>
-    <ActivityFeed items={activities} />
   );
 }
