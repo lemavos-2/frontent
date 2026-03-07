@@ -5,8 +5,11 @@ import tech.lemnova.continuum.application.exception.NotFoundException;
 import tech.lemnova.continuum.controller.dto.entity.EntityCreateRequest;
 import tech.lemnova.continuum.controller.dto.entity.EntityUpdateRequest;
 import tech.lemnova.continuum.domain.entity.Entity;
+import tech.lemnova.continuum.domain.entity.EntityType;
 import tech.lemnova.continuum.domain.note.Note;
 import tech.lemnova.continuum.domain.NoteEntity;
+import tech.lemnova.continuum.domain.user.User;
+import tech.lemnova.continuum.domain.user.UserRepository;
 import tech.lemnova.continuum.infra.persistence.EntityRepository;
 import tech.lemnova.continuum.infra.persistence.NoteRepository;
 import tech.lemnova.continuum.infra.persistence.NoteEntityRepository;
@@ -22,13 +25,31 @@ public class EntityService {
     private final EntityRepository entityRepo;
     private final NoteRepository noteRepo;
     private final NoteEntityRepository noteEntityRepo;
+    private final UserRepository userRepo;
 
     public EntityService(EntityRepository entityRepo,
                          NoteRepository noteRepo,
-                         NoteEntityRepository noteEntityRepo) {
+                         NoteEntityRepository noteEntityRepo,
+                         UserRepository userRepo) {
         this.entityRepo = entityRepo;
         this.noteRepo = noteRepo;
         this.noteEntityRepo = noteEntityRepo;
+        this.userRepo = userRepo;
+    }
+    
+    private User getUser(String userId) {
+        return userRepo.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found: " + userId));
+    }
+    
+    public Entity get(String userId, String entityId) {
+        User user = getUser(userId);
+        return getEntity(user.getVaultId(), entityId);
+    }
+    
+    public List<Entity> listByType(String userId, EntityType type) {
+        User user = getUser(userId);
+        return listByVault(user.getVaultId());
     }
 
     public Entity create(String vaultId, EntityCreateRequest req) {
@@ -90,6 +111,14 @@ public class EntityService {
     public List<Entity> listByVault(String vaultId) {
         return entityRepo.findAll().stream()
                 .filter(e -> e.getVaultId().equals(vaultId))
+                .collect(Collectors.toList());
+    }
+    
+    public List<String> getConnectedEntityIds(String vaultId, String entityId, List<String> noteIds) {
+        return noteEntityRepo.findAll().stream()
+                .filter(ne -> noteIds.contains(ne.getNoteId()) && !ne.getEntityId().equals(entityId))
+                .map(NoteEntity::getEntityId)
+                .distinct()
                 .collect(Collectors.toList());
     }
 }

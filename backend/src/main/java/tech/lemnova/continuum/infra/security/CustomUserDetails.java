@@ -15,6 +15,7 @@ public class CustomUserDetails implements UserDetails {
     private final String username;
     private final String password;
     private final String email;
+    private final String vaultId;
     private final boolean active;
     private final PlanType plan;
     private final Collection<? extends GrantedAuthority> authorities;
@@ -24,6 +25,7 @@ public class CustomUserDetails implements UserDetails {
         this.username  = user.getUsername();
         this.password  = user.getPassword();
         this.email     = user.getEmail();
+        this.vaultId   = user.getVaultId();
         this.active    = Boolean.TRUE.equals(user.getActive());
         this.plan      = user.getPlan();
         this.authorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().toUpperCase()));
@@ -31,6 +33,7 @@ public class CustomUserDetails implements UserDetails {
 
     public String getUserId() { return userId; }
     public String getEmail()  { return email; }
+    public String getVaultId() { return vaultId; }
     public PlanType getPlan() { return plan; }
 
     @Override public String getUsername()   { return username; }

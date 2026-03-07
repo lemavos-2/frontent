@@ -21,6 +21,10 @@ public class Entity {
     private String title;
     private String description;
     private Instant createdAt;
+    
+    public boolean isTrackable() {
+        return true;
+    }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

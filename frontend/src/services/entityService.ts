@@ -16,13 +16,8 @@ export const entityService = {
   async getConnections(id: string): Promise<Entity[]> {
     return (await api.get<Entity[]>(`/api/entities/${id}/connections`)).data;
   },
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
   // POST /api/entities/:id/restore
   async restore(id: string): Promise<Entity> {
     return (await api.post<Entity>(`/api/entities/${id}/restore`)).data;
   },
 };
-
-// ─────────────────────────────────────────────────────────────────────────────
