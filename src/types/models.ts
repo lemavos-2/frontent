@@ -1,30 +1,32 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
-export type EntityType = "PERSON" | "HABIT" | "PROJECT" | "GOAL" | "DREAM" | "EVENT" | "CUSTOM";
+export type EntityType = "PERSON" | "PROJECT" | "HABIT" | "TOPIC" | "OTHER";
 export type PlanType = "FREE" | "PRO" | "VISION";
 export type SubscriptionStatus = "ACTIVE" | "PAST_DUE" | "CANCELED" | "TRIALING" | "INCOMPLETE";
-export type TrackingFrequency = "DAILY" | "WEEKLY" | "MONTHLY";
+export type TrackingUnit = "COUNT" | "BOOLEAN" | "DURATION" | "NUMERIC";
 
 export interface TrackingConfig {
-  enabled: boolean;
-  frequency?: TrackingFrequency;
-  goal?: number;
-  unit?: string;
-  type?: "BOOLEAN" | "INTEGER" | "DECIMAL";
+  entityId?: string;
+  trackingUnit: TrackingUnit;
+  targetValue: number;
+  createdAt?: string;
 }
 
 export interface Entity {
   id: string;
-  userId: string;
-  type: EntityType;
   name: string;
+  entityType: EntityType;
   description?: string;
-  icon?: string;
-  color?: string;
-  tracking?: TrackingConfig;
-  metadata?: Record<string, unknown>;
   createdAt: string;
-  updatedAt: string;
+  archivedAt?: string;
+  tags?: string[];
+}
+
+export interface NoteReference {
+  id: string;
+  noteId: string;
+  entityId: string;
+  createdAt: string;
   archivedAt?: string;
 }
 
@@ -61,23 +63,17 @@ export interface Folder {
 
 export interface TrackingEvent {
   id: string;
-  userId: string;
   entityId: string;
-  date: string;        // LocalDate yyyy-MM-dd
   value?: number;
-  decimalValue?: number;
-  note?: string;
-  createdAt: string;
+  timestamp: string;
+  archivedAt?: string;
 }
 
 export interface TrackingStats {
-  totalDays: number;
   currentStreak: number;
   longestStreak: number;
-  avgValue: number;
-  firstTracked?: string;
-  lastTracked?: string;
-  weeklyCompletionRate?: number;
+  averageValue: number;
+  weeklyCompletionRate: number;
 }
 
 export interface TopEntity {

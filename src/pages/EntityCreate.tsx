@@ -3,24 +3,23 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { entityService } from "@/services/entityService";
-import type { EntityType, TrackingFrequency } from "@/types/models";
+import type { EntityType, TrackingUnit } from "@/types/models";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2 } from "lucide-react";
 
 const ENTITY_TYPES: { value: EntityType; label: string; trackable: boolean }[] = [
   { value: "PERSON",  label: "Pessoa",   trackable: false },
+  { value: "PROJECT", label: "Projeto",  trackable: false },
   { value: "HABIT",   label: "Hábito",   trackable: true },
-  { value: "PROJECT", label: "Projeto",  trackable: true },
-  { value: "GOAL",    label: "Objetivo", trackable: true },
-  { value: "DREAM",   label: "Sonho",    trackable: false },
-  { value: "EVENT",   label: "Evento",   trackable: false },
-  { value: "CUSTOM",  label: "Custom",   trackable: true },
+  { value: "TOPIC",   label: "Tópico",   trackable: false },
+  { value: "OTHER",   label: "Outro",    trackable: false },
 ];
 
-const FREQ: { value: TrackingFrequency; label: string }[] = [
-  { value: "DAILY",   label: "Diário" },
-  { value: "WEEKLY",  label: "Semanal" },
-  { value: "MONTHLY", label: "Mensal" },
+const TRACKING_UNITS: { value: TrackingUnit; label: string }[] = [
+  { value: "BOOLEAN", label: "Sim/Não" },
+  { value: "COUNT",   label: "Contagem" },
+  { value: "DURATION", label: "Duração" },
+  { value: "NUMERIC", label: "Numérico" },
 ];
 
 export default function EntityCreatePage() {
@@ -29,17 +28,15 @@ export default function EntityCreatePage() {
   const defaultType = (searchParams.get("type") || "PERSON") as EntityType;
 
   const [form, setForm] = useState({
-    name: "", description: "", type: defaultType,
-    icon: "", color: "",
-    trackingEnabled: defaultType === "HABIT",
-    frequency: "DAILY" as TrackingFrequency,
-    goal: "", unit: "",
-    trackingType: "BOOLEAN" as "BOOLEAN" | "INTEGER" | "DECIMAL",
+    name: "", description: "", entityType: defaultType,
+    tags: [] as string[],
+    trackingUnit: "BOOLEAN" as TrackingUnit,
+    targetValue: "",
   });
   const [loading, setLoading] = useState(false);
 
-  const typeInfo = ENTITY_TYPES.find((t) => t.value === form.type)!;
-  const showTracking = typeInfo.trackable && form.trackingEnabled;
+  const typeInfo = ENTITY_TYPES.find((t) => t.value === form.entityType)!;
+  const showTracking = typeInfo.trackable;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,19 +46,15 @@ export default function EntityCreatePage() {
       const entity = await entityService.create({
         name: form.name.trim(),
         description: form.description || undefined,
-        type: form.type,
-        icon: form.icon || undefined,
-        color: form.color || undefined,
-        tracking: form.trackingEnabled && typeInfo.trackable ? {
-          enabled: true,
-          frequency: form.frequency,
-          goal: form.goal ? Number(form.goal) : undefined,
-          unit: form.unit || undefined,
-          type: form.trackingType,
+        entityType: form.entityType,
+        tags: form.tags.length > 0 ? form.tags : undefined,
+        trackingConfig: showTracking ? {
+          trackingUnit: form.trackingUnit,
+          targetValue: form.targetValue ? Number(form.targetValue) : 0,
         } : undefined,
       });
       toast.success("Entidade criada!");
-      navigate(form.type === "HABIT" ? "/habits" : `/entities/${entity.id}`);
+      navigate(form.entityType === "HABIT" ? "/habits" : `/entities/${entity.id}`);
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Erro ao criar");
     } finally {
@@ -84,14 +77,14 @@ export default function EntityCreatePage() {
         {/* Type */}
         <div>
           <label className="block text-xs text-[#666] mb-2 font-medium">Tipo</label>
-          <div className="grid grid-cols-4 gap-1.5">
+          <div className="grid grid-cols-3 gap-1.5">
             {ENTITY_TYPES.map((t) => (
               <button
                 key={t.value}
                 type="button"
-                onClick={() => setForm((f) => ({ ...f, type: t.value, trackingEnabled: t.trackable && t.value === "HABIT" }))}
+                onClick={() => setForm((f) => ({ ...f, entityType: t.value }))}
                 className={`py-2 rounded-md text-xs font-medium transition-colors ${
-                  form.type === t.value
+                  form.entityType === t.value
                     ? "bg-[#3ecf8e]/20 text-[#3ecf8e] border border-[#3ecf8e]/30"
                     : "bg-[#111] text-[#666] border border-white/5 hover:border-white/10"
                 }`}
@@ -104,8 +97,83 @@ export default function EntityCreatePage() {
 
         {/* Name */}
         <div>
-          <label className="block text-xs text-[#666] mb-1.5 font-medium">Nome *</label>
+          <label className="block text-xs text-[#666] mb-2 font-medium">Nome</label>
           <input
+            type="text"
+            value={form.name}
+            onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+            className={inp}
+            placeholder="Nome da entidade"
+            required
+          />
+        </div>
+
+        {/* Description */}
+        <div>
+          <label className="block text-xs text-[#666] mb-2 font-medium">Descrição (opcional)</label>
+          <textarea
+            value={form.description}
+            onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+            className={`${inp} resize-none`}
+            rows={3}
+            placeholder="Descrição opcional"
+          />
+        </div>
+
+        {/* Tags */}
+        <div>
+          <label className="block text-xs text-[#666] mb-2 font-medium">Tags (opcional)</label>
+          <input
+            type="text"
+            value={form.tags.join(", ")}
+            onChange={(e) => setForm((f) => ({ ...f, tags: e.target.value.split(",").map(s => s.trim()).filter(s => s) }))}
+            className={inp}
+            placeholder="tag1, tag2, tag3"
+          />
+        </div>
+
+        {/* Tracking Config for HABIT */}
+        {showTracking && (
+          <>
+            <div>
+              <label className="block text-xs text-[#666] mb-2 font-medium">Tipo de Rastreamento</label>
+              <select
+                value={form.trackingUnit}
+                onChange={(e) => setForm((f) => ({ ...f, trackingUnit: e.target.value as TrackingUnit }))}
+                className={inp}
+              >
+                {TRACKING_UNITS.map((u) => (
+                  <option key={u.value} value={u.value}>{u.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs text-[#666] mb-2 font-medium">Valor Alvo</label>
+              <input
+                type="number"
+                value={form.targetValue}
+                onChange={(e) => setForm((f) => ({ ...f, targetValue: e.target.value }))}
+                className={inp}
+                placeholder="Ex: 7 para 7 dias por semana"
+              />
+            </div>
+          </>
+        )}
+
+        {/* Submit */}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-[#3ecf8e] hover:bg-[#3ecf8e]/90 disabled:opacity-50 disabled:cursor-not-allowed text-black font-medium py-2.5 rounded-md transition-colors flex items-center justify-center gap-2"
+        >
+          {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+          Criar Entidade
+        </button>
+      </form>
+    </div>
+  );
+}
             required
             value={form.name}
             onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}

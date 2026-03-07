@@ -6,20 +6,16 @@ import type { Entity, EntityType, TrackingConfig } from "@/types/models";
 export interface EntityCreatePayload {
   name: string;
   description?: string;
-  type: EntityType;
-  icon?: string;
-  color?: string;
-  tracking?: TrackingConfig;
-  metadata?: Record<string, unknown>;
+  entityType: EntityType;
+  tags?: string[];
+  trackingConfig?: TrackingConfig;
 }
 
 export interface EntityUpdatePayload {
   name?: string;
   description?: string;
-  icon?: string;
-  color?: string;
-  tracking?: TrackingConfig;
-  metadata?: Record<string, unknown>;
+  tags?: string[];
+  trackingConfig?: TrackingConfig;
 }
 
 export const entityService = {

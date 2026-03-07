@@ -1,11 +1,18 @@
+import { useState, useEffect } from "react";
 import { EntityList } from "@/components/entities/EntityList";
-
-const entities = [
-  { name: "Projeto X", type: "Projeto", notesCount: 5 },
-  { name: "Livro Y", type: "Livro", notesCount: 2 },
-];
+import { entityService } from "@/services/entityService";
+import type { Entity } from "@/types/models";
 
 export default function EntitiesPage() {
+  const [entities, setEntities] = useState<Entity[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    entityService.list().then(setEntities).finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+
   return (
     <div className="mt-4">
       <EntityList entities={entities} />
