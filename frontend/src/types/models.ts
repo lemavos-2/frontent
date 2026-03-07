@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
-export type EntityType = "PERSON" | "PROJECT" | "HABIT" | "TOPIC" | "OTHER";
+export type EntityType = "PERSON" | "HABIT" | "PROJECT" | "EVENT" | "GOAL" | "DREAM" | "CUSTOM";
 export type PlanType = "FREE" | "PRO" | "VISION";
 export type SubscriptionStatus = "ACTIVE" | "PAST_DUE" | "CANCELED" | "TRIALING" | "INCOMPLETE";
 export type TrackingUnit = "COUNT" | "BOOLEAN" | "DURATION" | "NUMERIC";

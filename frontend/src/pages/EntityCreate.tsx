@@ -11,8 +11,8 @@ const ENTITY_TYPES = [
   { value: "PERSON" as EntityType, label: "Pessoa", trackable: false },
   { value: "PROJECT" as EntityType, label: "Projeto", trackable: false },
   { value: "HABIT" as EntityType, label: "Hábito", trackable: true },
-  { value: "TOPIC" as EntityType, label: "Tópico", trackable: false },
-  { value: "OTHER" as EntityType, label: "Outro", trackable: false },
+  { value: "EVENT" as EntityType, label: "Evento", trackable: false },
+  { value: "CUSTOM" as EntityType, label: "Personalizado", trackable: false },
 ];
 
 const TRACKING_UNITS = [

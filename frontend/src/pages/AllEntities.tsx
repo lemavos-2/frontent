@@ -11,8 +11,10 @@ const TYPE_LABELS: Record<EntityType, string> = {
   PERSON: "Pessoa",
   PROJECT: "Projeto",
   HABIT: "Hábito",
-  TOPIC: "Tópico",
-  OTHER: "Outro",
+  EVENT: "Evento",
+  GOAL: "Meta",
+  DREAM: "Sonho",
+  CUSTOM: "Personalizado",
 };
 
 const TABS: { value: EntityType | "ALL"; label: string }[] = [
@@ -20,8 +22,10 @@ const TABS: { value: EntityType | "ALL"; label: string }[] = [
   { value: "PERSON", label: "Pessoas" },
   { value: "PROJECT", label: "Projetos" },
   { value: "HABIT", label: "Hábitos" },
-  { value: "TOPIC", label: "Tópicos" },
-  { value: "OTHER", label: "Outros" },
+  { value: "EVENT", label: "Eventos" },
+  { value: "GOAL", label: "Metas" },
+  { value: "DREAM", label: "Sonhos" },
+  { value: "CUSTOM", label: "Personalizados" },
 ];
 
 export default function AllEntitiesPage() {
@@ -128,7 +132,7 @@ export default function AllEntitiesPage() {
             </>
           ) : (
             <>
-              <div className="text-2xl mb-3">{activeType === "PERSON" ? "👥" : activeType === "PROJECT" ? "📁" : activeType === "HABIT" ? "🎯" : activeType === "TOPIC" ? "💭" : "📄"}</div>
+              <div className="text-2xl mb-3">{activeType === "PERSON" ? "👥" : activeType === "PROJECT" ? "📁" : activeType === "HABIT" ? "🎯" : activeType === "EVENT" ? "📅" : activeType === "GOAL" ? "🎯" : activeType === "DREAM" ? "💭" : activeType === "CUSTOM" ? "📄" : "📄"}</div>
               <p className="text-sm text-[#555]">Nenhum {TABS.find(t => t.value === activeType)?.label.toLowerCase()} ainda</p>
               <button
                 onClick={() => navigate("/entities/new?type=" + activeType)}

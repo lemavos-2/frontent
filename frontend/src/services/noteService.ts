@@ -28,6 +28,10 @@ export const noteService = {
   async recent(): Promise<NoteIndex[]> {
     return (await api.get<NoteIndex[]>("/api/notes/recent")).data;
   },
+  // GET /api/notes/search?q=
+  async search(q: string): Promise<NoteIndex[]> {
+    return (await api.get<NoteIndex[]>("/api/notes/search", { params: { q } })).data;
+  },
   // PATCH /api/notes/:id/move
   async move(id: string, folderId: string | null): Promise<void> {
     await api.patch(`/api/notes/${id}/move`, { folderId });

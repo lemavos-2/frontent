@@ -22,7 +22,7 @@ const TRACKING_UNITS: { value: TrackingUnit; label: string }[] = [
   { value: "NUMERIC", label: "Numérico" },
 ];
 
-const TRACKABLE_TYPES = new Set<EntityType>(["HABIT", "PROJECT", "PERSON", "TOPIC", "OTHER"]);
+const TRACKABLE_TYPES = new Set<EntityType>(["HABIT", "PROJECT", "PERSON", "EVENT", "CUSTOM"]);
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -101,6 +101,10 @@ export default function EntityDetailPage() {
       ]);
       if (e.status === "fulfilled") setEntity(e.value);
       if (tl.status === "fulfilled") setTimeline(tl.value);
+      else if (tl.status === "rejected" && tl.reason?.response?.status === 402) {
+        // Timeline not available for this plan
+        setTimeline(null);
+      }
 
       // Load tracking stats and heatmap if trackable
       if (e.status === "fulfilled" && e.value.tracking?.enabled) {
@@ -264,7 +268,7 @@ export default function EntityDetailPage() {
       )}
 
       {/* Mention metrics */}
-      {timeline && (
+      {timeline ? (
         <div className="bg-[#111] border border-white/5 rounded-xl p-4">
           <div className="flex items-center gap-2 mb-3">
             <Hash className="h-4 w-4 text-purple-400" />
@@ -307,6 +311,24 @@ export default function EntityDetailPage() {
               ))}
             </div>
           )}
+        </div>
+      ) : entity && (
+        <div className="bg-[#111] border border-white/5 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Hash className="h-4 w-4 text-purple-400" />
+            <p className="text-xs font-medium text-[#666] uppercase tracking-wider">
+              Menções no journal
+            </p>
+          </div>
+          <p className="text-sm text-[#444] py-2">
+            Métricas avançadas requerem um plano superior.{" "}
+            <button 
+              onClick={() => navigate("/upgrade")}
+              className="text-[#3ecf8e] hover:underline"
+            >
+              Fazer upgrade →
+            </button>
+          </p>
         </div>
       )}
 

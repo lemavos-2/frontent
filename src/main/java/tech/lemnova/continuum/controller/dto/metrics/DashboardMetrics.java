@@ -1,0 +1,18 @@
+package tech.lemnova.continuum.controller.dto.metrics;
+
+import java.util.List;
+import java.time.LocalDate;
+import java.util.Map;
+
+public record DashboardMetrics(
+    long uniquePeople,
+    long uniqueProjects,
+    long uniqueHabits,
+    long totalMentions,
+    List<TopEntity> topPeople,
+    List<TopEntity> topProjects,
+    List<TopEntity> topHabits,
+    List<String> habitsCompletedToday,
+    double weeklyAverageCompletionRate,
+    Map<LocalDate, Long> globalHeatmap
+) {}
