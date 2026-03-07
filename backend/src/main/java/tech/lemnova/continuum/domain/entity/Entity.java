@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.Instant;
-import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -12,7 +11,7 @@ import jakarta.persistence.UniqueConstraint;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@jakarta.persistence.Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"vault_id", "title"}))
 public class Entity {
 
