@@ -18,7 +18,6 @@ import tech.lemnova.continuum.infra.persistence.NoteEntityRepository;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class NoteService {
@@ -39,6 +38,57 @@ public class NoteService {
         this.noteEntityRepo = noteEntityRepo;
         this.entityParser = entityParser;
     }
+
+    @Transactional
+    public NoteResponse create(String vaultId, NoteCreateRequest req) {
+        String noteId = UUID.randomUUID().toString().replace("-", "");
+        String content = req.content() != null ? req.content() : "";
+
+        Note note = new Note();
+        note.setId(noteId);
+        note.setVaultId(vaultId);
+        note.setFolderId(req.folderId());
+        note.setTitle(extractTitle(content));
+        note.setContent(content);
+        note.setCreatedAt(Instant.now());
+        note.setUpdatedAt(Instant.now());
+
+        noteRepo.save(note);
+
+        processEntities(vaultId, noteId, content);
+
+        return NoteResponse.from(note);
+    }
+
+    @Transactional
+    public NoteResponse update(String vaultId, String noteId, NoteUpdateRequest req) {
+        Note note = noteRepo.findById(noteId)
+                .filter(n -> n.getVaultId().equals(vaultId))
+                .orElseThrow(() -> new NotFoundException("Note not found: " + noteId));
+
+        String content = req.content() != null ? req.content() : "";
+        note.setTitle(extractTitle(content));
+        note.setContent(content);
+        note.setUpdatedAt(Instant.now());
+
+        noteRepo.save(note);
+
+        processEntities(vaultId, noteId, content);
+
+        return NoteResponse.from(note);
+    }
+
+    public NoteResponse get(String vaultId, String noteId) {
+        Note note = noteRepo.findById(noteId)
+                .filter(n -> n.getVaultId().equals(vaultId))
+                .orElseThrow(() -> new NotFoundException("Note not found: " + noteId));
+        return NoteResponse.from(note);
+    }
+
+    public List<Note> list(String vaultId) {
+        return noteRepo.findByVaultId(vaultId);
+    }
+
     private void processEntities(String vaultId, String noteId, String content) {
         List<String> entityTitles = entityParser.parseEntities(content);
         Set<String> uniqueTitles = new HashSet<>(entityTitles);
@@ -48,6 +98,38 @@ public class NoteService {
         noteEntityRepo.deleteAll(existing);
 
         // Create entities if not exist, link
+        int position = 0;
+        for (String title : uniqueTitles) {
+            Entity entity = entityRepo.findByVaultIdAndTitle(vaultId, title)
+                    .orElseGet(() -> {
+                        Entity newEntity = new Entity();
+                        newEntity.setId(UUID.randomUUID().toString().replace("-", ""));
+                        newEntity.setVaultId(vaultId);
+                        newEntity.setTitle(title);
+                        newEntity.setCreatedAt(Instant.now());
+                        return entityRepo.save(newEntity);
+                    });
+
+            NoteEntity noteEntity = new NoteEntity();
+            noteEntity.setNoteId(noteId);
+            noteEntity.setEntityId(entity.getId());
+            noteEntity.setPosition(position++);
+            noteEntityRepo.save(noteEntity);
+        }
+    }
+
+    private String extractTitle(String content) {
+        if (content == null || content.isBlank()) return "Untitled";
+        String[] lines = content.split("\n");
+        for (String line : lines) {
+            String trimmed = line.trim();
+            if (!trimmed.isEmpty()) {
+                return trimmed.length() > 80 ? trimmed.substring(0, 80) : trimmed;
+            }
+        }
+        return "Untitled";
+    }
+}
         int position = 0;
         for (String title : uniqueTitles) {
             Entity entity = entityRepo.findByVaultIdAndTitle(vaultId, title)

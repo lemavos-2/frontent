@@ -27,24 +27,4 @@ public class NoteIndex {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// [V11-ARCH] Folder: POJO puro — sem @Document.
-// Guardado em _folders/folders.json no vault B2.
 // ─────────────────────────────────────────────────────────────────────────────
-
-import lombok.Getter;
-import lombok.Setter;
-
-/**
- * Resultado de busca de notas com preview do conteúdo
- */
-@Getter
-@Setter
-public class NoteSearchResult extends NoteIndex {
-    private String preview;
-
-    public NoteSearchResult(NoteIndex index, String preview) {
-        super(index.getId(), index.getUserId(), index.getFolderId(), index.getTitle(),
-              index.getArchivedAt(), index.getCreatedAt(), index.getUpdatedAt());
-        this.preview = preview;
-    }
-}
