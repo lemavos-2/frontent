@@ -113,11 +113,11 @@ export default function EntityCreatePage() {
           </label>
           <input
             type="text"
+            required
             value={form.name}
             onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
             className={inputClass}
-            placeholder="Nome da entidade"
-            required
+            placeholder={form.entityType === "HABIT" ? "ex: Meditação diária" : "Nome da entidade"}
           />
         </div>
 
