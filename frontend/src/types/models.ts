@@ -7,8 +7,12 @@ export type TrackingUnit = "COUNT" | "BOOLEAN" | "DURATION" | "NUMERIC";
 
 export interface TrackingConfig {
   entityId?: string;
-  trackingUnit: TrackingUnit;
-  targetValue: number;
+  enabled?: boolean;
+  frequency?: string;
+  trackingUnit?: TrackingUnit;
+  targetValue?: number;
+  streakEnabled?: boolean;
+  allowDecimals?: boolean;
   createdAt?: string;
 }
 

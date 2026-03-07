@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { entityService } from "@/services/entityService";
 import { trackingService } from "@/services/trackingService";
 import { metricsService } from "@/services/metricsService";
-import type { Entity, TrackingStats, EntityTimeline } from "@/types/models";
+import type { Entity, TrackingStats, EntityTimeline, EntityType, TrackingUnit } from "@/types/models";
 import { toast } from "sonner";
 import { ArrowLeft, Trash2, CheckCircle2, Flame, TrendingUp, Hash } from "lucide-react";
 
@@ -14,6 +14,13 @@ const FREQ = [
   { value: "WEEKLY", label: "Semanal" },
   { value: "MONTHLY", label: "Mensal" },
 ] as const;
+
+const TRACKING_UNITS: { value: TrackingUnit; label: string }[] = [
+  { value: "BOOLEAN", label: "Sim/Não" },
+  { value: "COUNT",   label: "Contagem" },
+  { value: "DURATION", label: "Duração" },
+  { value: "NUMERIC", label: "Numérico" },
+];
 
 const TRACKABLE_TYPES = new Set<EntityType>(["HABIT", "PROJECT", "PERSON", "TOPIC", "OTHER"]);
 import { format, parseISO } from "date-fns";
@@ -76,9 +83,8 @@ export default function EntityDetailPage() {
     color?: string;
     trackingEnabled?: boolean;
     frequency?: string;
-    goal?: number;
-    unit?: string;
-    trackingType?: string;
+    targetValue?: number;
+    trackingUnit?: string;
   }>({ name: "" });
 
   useEffect(() => {
@@ -199,9 +205,8 @@ export default function EntityDetailPage() {
                     color: entity.color || undefined,
                     trackingEnabled: entity.tracking?.enabled,
                     frequency: entity.tracking?.frequency,
-                    goal: entity.tracking?.goal,
-                    unit: entity.tracking?.unit,
-                    trackingType: entity.tracking?.type,
+                    targetValue: entity.tracking?.targetValue,
+                    trackingUnit: entity.tracking?.trackingUnit,
                   });
                   setEditOpen(true);
                 }
@@ -335,9 +340,8 @@ export default function EntityDetailPage() {
                   updateData.tracking = {
                     enabled: !!form.trackingEnabled,
                     frequency: form.frequency,
-                    goal: form.goal,
-                    unit: form.unit,
-                    type: form.trackingType,
+                    targetValue: form.targetValue,
+                    trackingUnit: form.trackingUnit,
                   };
                 }
                 await entityService.update(entity.id, updateData);
@@ -414,39 +418,43 @@ export default function EntityDetailPage() {
                         ))}
                       </div>
                       <div className="grid grid-cols-3 gap-1.5">
-                        {(["BOOLEAN", "INTEGER", "DECIMAL"] as const).map((t) => (
+                        {TRACKING_UNITS.map((u) => (
                           <button
-                            key={t}
+                            key={u.value}
                             type="button"
-                            onClick={() => setForm((prev) => ({ ...prev, trackingType: t }))}
+                            onClick={() => setForm((prev) => ({ ...prev, trackingUnit: u.value }))}
                             className={`py-1.5 rounded text-xs font-medium transition-colors ${
-                              form.trackingType === t
+                              form.trackingUnit === u.value
                                 ? "bg-white/10 text-white"
                                 : "bg-white/5 text-[#555] hover:text-[#888]"
                             }`}
                           >
-                            {t === "BOOLEAN" ? "Sim/Não" : t === "INTEGER" ? "Inteiro" : "Decimal"}
+                            {u.label}
                           </button>
                         ))}
                       </div>
-                      {form.trackingType !== "BOOLEAN" && (
+                      {form.trackingUnit !== "BOOLEAN" && (
                         <div className="grid grid-cols-2 gap-2">
                           <div>
                             <label className="text-xs text-[#666] mb-1">Meta</label>
                             <input
                               type="number"
-                              value={form.goal || ""}
-                              onChange={(e) => setForm((f) => ({ ...f, goal: Number(e.target.value) }))}
+                              value={form.targetValue || ""}
+                              onChange={(e) => setForm((f) => ({ ...f, targetValue: Number(e.target.value) }))}
                               className="w-full bg-[#1a1a1c] border border-white/10 rounded-md px-3 py-2 text-sm text-white"
                             />
                           </div>
                           <div>
                             <label className="text-xs text-[#666] mb-1">Unidade</label>
-                            <input
-                              value={form.unit || ""}
-                              onChange={(e) => setForm((f) => ({ ...f, unit: e.target.value }))}
+                            <select
+                              value={form.trackingUnit || ""}
+                              onChange={(e) => setForm((f) => ({ ...f, trackingUnit: e.target.value }))}
                               className="w-full bg-[#1a1a1c] border border-white/10 rounded-md px-3 py-2 text-sm text-white"
-                            />
+                            >
+                              {TRACKING_UNITS.map((u) => (
+                                <option key={u.value} value={u.value}>{u.label}</option>
+                              ))}
+                            </select>
                           </div>
                         </div>
                       )}
