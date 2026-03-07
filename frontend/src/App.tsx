@@ -10,6 +10,7 @@ import AppLayout from "@/components/AppLayout";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import LoginPage from "@/pages/Login";
 import RegisterPage from "@/pages/Register";
+import EmailVerificationPage from "@/pages/EmailVerification";
 import DashboardPage from "@/pages/Dashboard";
 import JournalPage from "@/pages/Journal";
 import JournalEditorPage from "@/pages/JournalEditor";
@@ -37,6 +38,7 @@ function AppRoutes() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/verify-email" element={<EmailVerificationPage />} />
       <Route
         path="/*"
         element={

@@ -4,13 +4,16 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/authStore";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail, RefreshCw } from "lucide-react";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
   const register = useAuthStore((s) => s.register);
+  const resendVerification = useAuthStore((s) => s.resendVerification);
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
+  const [registered, setRegistered] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,13 +21,66 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       await register(form);
-      navigate("/dashboard");
+      setRegistered(true);
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Erro ao criar conta");
     } finally {
       setLoading(false);
     }
   };
+
+  const resendVerification = async () => {
+    setResendLoading(true);
+    try {
+      await resendVerification(form.email);
+      toast.success("Email de verificação reenviado");
+    } catch (err: any) {
+      toast.error("Erro ao reenviar email");
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
+  if (registered) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0b] flex items-center justify-center px-4">
+        <div className="w-full max-w-sm text-center">
+          <div className="mb-8">
+            <div className="mx-auto w-16 h-16 bg-[#3ecf8e]/10 rounded-full flex items-center justify-center mb-4">
+              <Mail className="w-8 h-8 text-[#3ecf8e]" />
+            </div>
+            <h1 className="text-2xl font-bold text-white">Verifique seu email</h1>
+            <p className="mt-2 text-sm text-[#666]">
+              Enviamos um link de verificação para <strong className="text-white">{form.email}</strong>
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            <p className="text-xs text-[#555]">
+              Clique no link do email para ativar sua conta e começar a usar o Continuum.
+            </p>
+
+            <button
+              onClick={resendVerification}
+              disabled={resendLoading}
+              className="w-full bg-[#111] hover:bg-[#111]/80 disabled:opacity-50 text-white font-medium py-2.5 rounded-md text-sm transition-colors flex items-center justify-center gap-2 border border-white/10"
+            >
+              {resendLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+              <RefreshCw className="h-4 w-4" />
+              Reenviar email
+            </button>
+
+            <Link
+              to="/login"
+              className="block w-full bg-[#3ecf8e] hover:bg-[#3ecf8e]/90 text-black font-semibold py-2.5 rounded-md text-sm transition-colors text-center"
+            >
+              Voltar ao login
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#0a0a0b] flex items-center justify-center px-4">

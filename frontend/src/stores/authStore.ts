@@ -10,6 +10,8 @@ interface AuthState {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (data: { username: string; email: string; password: string }) => Promise<void>;
+  resendVerification: (email: string) => Promise<void>;
+  verifyEmail: (token: string) => Promise<void>;
   logout: () => void;
   hydrate: () => Promise<void>;
   updateUser: (u: Partial<User>) => void;
@@ -29,11 +31,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   register: async (data) => {
-    const res = await authService.register(data);
-    localStorage.setItem("token", res.token);
-    set({ token: res.token });
-    const user = await authService.me();
-    set({ user });
+    await authService.register(data);
+  },
+
+  resendVerification: async (email) => {
+    await authService.resendVerification(email);
+  },
+
+  verifyEmail: async (token) => {
+    await authService.verifyEmail(token);
   },
 
   logout: () => {
