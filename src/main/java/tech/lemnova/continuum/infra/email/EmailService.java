@@ -17,7 +17,6 @@ public class EmailService {
     private String from;
 
     @Value("${app.url}")
-    @Value("${app.url}")
     private String appUrl;
 
     public EmailService(@Value("${resend.api-key}") String apiKey) {

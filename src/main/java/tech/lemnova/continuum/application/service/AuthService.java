@@ -291,23 +291,6 @@ public class AuthService {
     }
 
     @Transactional
-    public void verifyEmail(String token) {
-        User user = users.findByVerificationToken(token)
-                .orElseThrow(() -> new BadRequestException("Invalid verification token"));
-
-        if (user.getTokenExpiry().isBefore(Instant.now())) {
-            throw new BadRequestException("Verification token expired");
-        }
-
-        user.setEmailVerified(true);
-        user.setVerificationToken(null);
-        user.setTokenExpiry(null);
-        user.setActive(true);
-        user.setUpdatedAt(Instant.now());
-        users.save(user);
-    }
-
-    @Transactional
     public void resendVerificationEmail(String email) {
         User user = users.findByEmail(email)
                 .orElseThrow(() -> new BadRequestException("User not found"));
