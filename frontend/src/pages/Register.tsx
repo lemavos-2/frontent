@@ -29,7 +29,7 @@ export default function RegisterPage() {
     }
   };
 
-  const resendVerification = async () => {
+  const handleResendVerification = async () => {
     setResendLoading(true);
     try {
       await resendVerification(form.email);
@@ -61,7 +61,7 @@ export default function RegisterPage() {
             </p>
 
             <button
-              onClick={resendVerification}
+              onClick={handleResendVerification}
               disabled={resendLoading}
               className="w-full bg-[#111] hover:bg-[#111]/80 disabled:opacity-50 text-white font-medium py-2.5 rounded-md text-sm transition-colors flex items-center justify-center gap-2 border border-white/10"
             >
