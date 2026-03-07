@@ -9,22 +9,19 @@ import { Plus, Search, Trash2, ChevronRight } from "lucide-react";
 
 const TYPE_LABELS: Record<EntityType, string> = {
   PERSON: "Pessoa",
-  HABIT: "Hábito",
   PROJECT: "Projeto",
-  GOAL: "Objetivo",
-  DREAM: "Sonho",
-  EVENT: "Evento",
-  CUSTOM: "Custom",
+  HABIT: "Hábito",
+  TOPIC: "Tópico",
+  OTHER: "Outro",
 };
 
 const TABS: { value: EntityType | "ALL"; label: string }[] = [
   { value: "ALL", label: "Todas" },
   { value: "PERSON", label: "Pessoas" },
   { value: "PROJECT", label: "Projetos" },
-  { value: "GOAL", label: "Objetivos" },
-  { value: "DREAM", label: "Sonhos" },
-  { value: "EVENT", label: "Eventos" },
-  { value: "CUSTOM", label: "Custom" },
+  { value: "HABIT", label: "Hábitos" },
+  { value: "TOPIC", label: "Tópicos" },
+  { value: "OTHER", label: "Outros" },
 ];
 
 export default function AllEntitiesPage() {
@@ -105,8 +102,42 @@ export default function AllEntitiesPage() {
           {[1,2,3,4].map(i => <div key={i} className="h-12 bg-[#111] rounded-lg" />)}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-sm text-[#555]">Nenhuma entidade encontrada</p>
+        <div className="text-center py-16">
+          {search ? (
+            <>
+              <Search className="h-10 w-10 text-[#333] mx-auto mb-3" />
+              <p className="text-sm text-[#555]">Nenhuma entidade encontrada para "{search}"</p>
+              <button
+                onClick={() => setSearch("")}
+                className="mt-3 text-[#3ecf8e] text-sm hover:underline"
+              >
+                Limpar busca
+              </button>
+            </>
+          ) : activeType === "ALL" ? (
+            <>
+              <Plus className="h-10 w-10 text-[#333] mx-auto mb-3" />
+              <p className="text-sm text-[#555]">Nenhuma entidade criada ainda</p>
+              <p className="text-xs text-[#444] mt-1 mb-4">Entidades ajudam a organizar e conectar suas ideias no journal</p>
+              <button
+                onClick={() => navigate("/entities/new")}
+                className="text-[#3ecf8e] text-sm hover:underline"
+              >
+                Criar primeira entidade →
+              </button>
+            </>
+          ) : (
+            <>
+              <div className="text-2xl mb-3">{activeType === "PERSON" ? "👥" : activeType === "PROJECT" ? "📁" : activeType === "HABIT" ? "🎯" : activeType === "TOPIC" ? "💭" : "📄"}</div>
+              <p className="text-sm text-[#555]">Nenhum {TABS.find(t => t.value === activeType)?.label.toLowerCase()} ainda</p>
+              <button
+                onClick={() => navigate("/entities/new?type=" + activeType)}
+                className="mt-3 text-[#3ecf8e] text-sm hover:underline"
+              >
+                Criar primeiro →
+              </button>
+            </>
+          )}
         </div>
       ) : (
         <div className="space-y-1">
@@ -120,7 +151,7 @@ export default function AllEntitiesPage() {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-[#ddd] truncate">{entity.name}</p>
                   <p className="text-[11px] text-[#555] font-mono">
-                    {TYPE_LABELS[entity.type] || entity.type}
+                    {TYPE_LABELS[entity.entityType] || entity.entityType}
                     {entity.description && ` · ${entity.description.slice(0, 40)}`}
                   </p>
                 </div>

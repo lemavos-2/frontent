@@ -15,7 +15,7 @@ const FREQ = [
   { value: "MONTHLY", label: "Mensal" },
 ] as const;
 
-const TRACKABLE_TYPES = new Set<string>(["HABIT", "PROJECT", "GOAL", "CUSTOM"]);
+const TRACKABLE_TYPES = new Set<EntityType>(["HABIT", "PROJECT", "PERSON", "TOPIC", "OTHER"]);
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -173,7 +173,7 @@ export default function EntityDetailPage() {
                 <p className="text-sm text-[#666] mt-1">{entity.description}</p>
               )}
               <p className="text-xs text-[#444] font-mono mt-2">
-                {entity.type.toLowerCase()} · criado em {format(parseISO(entity.createdAt), "dd/MM/yyyy")}
+                {entity.entityType.toLowerCase()} · criado em {format(parseISO(entity.createdAt), "dd/MM/yyyy")}
               </p>
             </div>
           </div>
@@ -384,7 +384,7 @@ export default function EntityDetailPage() {
                 </div>
               </div>
               {/* tracking settings */}
-              {(TRACKABLE_TYPES.has(entity.type)) && (
+              {(TRACKABLE_TYPES.has(entity.entityType)) && (
                 <div className="mt-3 p-3 bg-[#0d0d0f] border border-white/5 rounded-lg space-y-3">
                   <label className="inline-flex items-center gap-2 text-sm">
                     <input
