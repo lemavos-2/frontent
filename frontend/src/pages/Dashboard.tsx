@@ -15,11 +15,11 @@ import Heatmap from "@/components/Heatmap";
 
 function StatCard({ label, value, icon, color }: { label: string; value: number; icon: React.ReactNode; color: string }) {
   return (
-    <div className={`bg-background-secondary border border-border rounded-lg p-4 flex items-center gap-3 ${color}`}>
-      <div className="p-2 rounded-md bg-background-tertiary">{icon}</div>
+    <div className={`bg-background-secondary border border-border rounded-xl p-6 flex items-center gap-4 ${color} hover:bg-background-tertiary transition-colors`}>
+      <div className="p-3 rounded-lg bg-brand/10">{icon}</div>
       <div className="min-w-0">
-        <p className="text-xl font-bold font-mono truncate max-w-[5ch]">{value}</p>
-        <p className="text-xs text-foreground-tertiary mt-1">{label}</p>
+        <p className="text-2xl font-bold font-mono truncate">{value}</p>
+        <p className="text-sm text-foreground-secondary mt-1">{label}</p>
       </div>
     </div>
   );
@@ -69,14 +69,14 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <p className="text-sm text-foreground-tertiary mt-1 font-mono">
+          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-sm text-foreground-secondary mt-1">
             {format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}
           </p>
         </div>
         <button
           onClick={() => navigate("/journal/new")}
-          className="flex items-center gap-2 bg-brand hover:bg-brand-dark text-background text-sm font-semibold px-4 py-2 rounded-md transition-colors touch-target"
+          className="flex items-center gap-2 bg-brand hover:bg-brand/90 text-background font-medium px-4 py-2 rounded-lg transition-colors"
         >
           <Plus className="h-4 w-4" />
           Nova entrada
@@ -85,13 +85,13 @@ export default function DashboardPage() {
 
       {/* Stats */}
       {metrics && (
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
-          <StatCard label="Pessoas" value={metrics.uniquePeople ?? 0} icon={<Users className="h-4 w-4 text-accent" />} color="border-accent/20" />
-          <StatCard label="Projetos" value={metrics.uniqueProjects ?? 0} icon={<FolderKanban className="h-4 w-4 text-accent-secondary" />} color="border-accent-secondary/20" />
-          <StatCard label="Hábitos" value={metrics.uniqueHabits ?? 0} icon={<Target className="h-4 w-4 text-brand" />} color="border-brand/20" />
-          <StatCard label="Menções" value={metrics.totalMentions ?? 0} icon={<Hash className="h-4 w-4 text-accent-warning" />} color="border-accent-warning/20" />
-          <StatCard label="Hábitos hoje" value={metrics.habitsCompletedToday ? metrics.habitsCompletedToday.length : 0} icon={<CheckCircle2 className="h-4 w-4 text-accent" />} color="border-accent/20" />
-          <StatCard label="Média semanal (%)" value={Math.round((metrics.weeklyAverageCompletionRate ?? 0) * 100)} icon={<CheckCircle2 className="h-4 w-4 text-accent-warning" />} color="border-accent-warning/20" />
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <StatCard label="Pessoas" value={metrics.uniquePeople ?? 0} icon={<Users className="h-5 w-5 text-brand" />} />
+          <StatCard label="Projetos" value={metrics.uniqueProjects ?? 0} icon={<FolderKanban className="h-5 w-5 text-blue-500" />} />
+          <StatCard label="Hábitos" value={metrics.uniqueHabits ?? 0} icon={<Target className="h-5 w-5 text-brand" />} />
+          <StatCard label="Menções" value={metrics.totalMentions ?? 0} icon={<Hash className="h-5 w-5 text-yellow-500" />} />
+          <StatCard label="Hábitos hoje" value={metrics.habitsCompletedToday ? metrics.habitsCompletedToday.length : 0} icon={<CheckCircle2 className="h-5 w-5 text-green-500" />} />
+          <StatCard label="Média semanal (%)" value={Math.round((metrics.weeklyAverageCompletionRate ?? 0) * 100)} icon={<CheckCircle2 className="h-5 w-5 text-yellow-500" />} />
         </div>
       )}
 
@@ -103,20 +103,20 @@ export default function DashboardPage() {
       )}
 
       {/* Today's habit check-ins */}
-      <div className="bg-background-secondary border border-border rounded-lg p-4">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-semibold flex items-center gap-2">
+      <div className="bg-background-secondary border border-border rounded-xl p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold flex items-center gap-2">
             <CheckCircle2 className="h-5 w-5 text-brand" />
             Check-ins de hoje
           </h2>
-          <button onClick={() => navigate("/habits")} className="text-sm text-foreground-tertiary hover:text-foreground transition-colors flex items-center gap-1">
+          <button onClick={() => navigate("/habits")} className="text-sm text-foreground-secondary hover:text-foreground transition-colors flex items-center gap-1">
             Ver todos <ArrowRight className="h-4 w-4" />
           </button>
         </div>
         {todayEvents.length === 0 ? (
-          <p className="text-sm text-foreground-tertiary py-3">Nenhum hábito registrado hoje.</p>
+          <p className="text-sm text-foreground-secondary py-4">Nenhum hábito registrado hoje.</p>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-3">
             {todayEvents.slice(0, 5).map((ev) => (
               <div key={ev.id} className="flex items-center gap-3 text-sm">
                 <div className="w-2 h-2 rounded-full bg-brand" />

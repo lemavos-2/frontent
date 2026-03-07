@@ -20,7 +20,7 @@ import EntityDetailPage from "@/pages/EntityDetail";
 import ConnectionsPage from "@/pages/Connections";
 import SearchPage from "@/pages/Search";
 import SettingsPage from "@/pages/Settings";
-import UpgradePage from "@/pages/Upgrade";
+import LandingPage from "@/pages/Landing";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 30_000 } },
@@ -28,10 +28,12 @@ const queryClient = new QueryClient({
 
 function AppRoutes() {
   const hydrate = useAuthStore((s) => s.hydrate);
+  const { token } = useAuthStore();
   useEffect(() => { hydrate(); }, [hydrate]);
 
   return (
     <Routes>
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route
@@ -40,7 +42,6 @@ function AppRoutes() {
           <ProtectedRoute>
             <AppLayout>
               <Routes>
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/journal" element={<JournalPage />} />
                 <Route path="/journal/new" element={<JournalEditorPage />} />

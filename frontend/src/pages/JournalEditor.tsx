@@ -340,8 +340,8 @@ export default function JournalEditorPage() {
                   if (e.key === "Escape") { setMentionQuery(""); setMentionPos(null); setHighlightedIndex(-1); }
                 }
               }}
-              placeholder={`Escreva sua entrada...\n\nUse @ para mencionar entidades: @nome\nO formato salvo é {tipo:id}\n\n# Título\n## Subtítulo\n**negrito** *itálico* \`código\``}
-              className="w-full min-h-[50vh] bg-background-secondary border border-border rounded-lg px-4 py-3 text-sm text-foreground placeholder-foreground-tertiary focus:outline-none focus:border-accent resize-none leading-relaxed font-mono transition-colors"
+              placeholder="Escreva sua entrada... Você pode referenciar entidades usando {entity:name}"
+              className="w-full min-h-[60vh] bg-background border border-border rounded-lg px-6 py-4 text-base text-foreground placeholder-foreground-tertiary focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand/20 resize-none leading-relaxed transition-colors"
             />
             {mentionPos && (
               <div style={{ position: "fixed", top: mentionPos.top, left: mentionPos.left, zIndex: 60 }}>

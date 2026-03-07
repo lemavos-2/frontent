@@ -6,28 +6,59 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        mono: ["'JetBrains Mono'", "'Fira Code'", "Consolas", "monospace"],
-        sans: ["Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+        mono: ["JetBrains Mono", "Fira Code", "Consolas", "monospace"],
       },
       colors: {
-        // Design System - Obsidian-inspired dark theme
+        // SaaS Color System
+        brand: {
+          DEFAULT: "#3ecf8e", // Primary green
+          50: "#f0fdf4",
+          100: "#dcfce7",
+          500: "#22c55e",
+          600: "#16a34a",
+          700: "#15803d",
+          900: "#14532d",
+        },
+        neutral: {
+          50: "#fafafa",
+          100: "#f5f5f5",
+          200: "#e5e5e5",
+          300: "#d4d4d4",
+          400: "#a3a3a3",
+          500: "#737373",
+          600: "#525252",
+          700: "#404040",
+          800: "#262626",
+          900: "#171717",
+          950: "#0a0a0a",
+        },
+        success: "#22c55e",
+        warning: "#f59e0b",
+        error: "#ef4444",
         background: {
-          DEFAULT: "#1e1e1e", // Main background
-          secondary: "#252526", // Secondary backgrounds
-          tertiary: "#2d2d30", // Cards, modals
+          DEFAULT: "#0a0a0b",
+          secondary: "#111111",
+          tertiary: "#1a1a1a",
         },
         foreground: {
-          DEFAULT: "#cccccc", // Primary text
-          secondary: "#aaaaaa", // Secondary text
-          tertiary: "#888888", // Muted text
+          DEFAULT: "#ffffff",
+          secondary: "#a3a3a3",
+          tertiary: "#737373",
         },
-        border: {
-          DEFAULT: "#3e3e42", // Subtle borders
-          secondary: "#454545", // Stronger borders
-        },
-        accent: {
-          DEFAULT: "#007acc", // Primary accent (blue)
-          secondary: "#4ec9b0", // Secondary accent (teal)
+        border: "#262626",
+      },
+      fontSize: {
+        xs: ["0.75rem", { lineHeight: "1rem" }],
+        sm: ["0.875rem", { lineHeight: "1.25rem" }],
+        base: ["1rem", { lineHeight: "1.5rem" }],
+        lg: ["1.125rem", { lineHeight: "1.75rem" }],
+        xl: ["1.25rem", { lineHeight: "1.75rem" }],
+        "2xl": ["1.5rem", { lineHeight: "2rem" }],
+        "3xl": ["1.875rem", { lineHeight: "2.25rem" }],
+        "4xl": ["2.25rem", { lineHeight: "2.5rem" }],
+        "5xl": ["3rem", { lineHeight: "1" }],
+      },
           success: "#4ec9b0", // Success color
           warning: "#d7ba7d", // Warning color
           error: "#f44747", // Error color
