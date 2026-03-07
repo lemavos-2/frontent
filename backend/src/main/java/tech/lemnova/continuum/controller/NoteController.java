@@ -8,7 +8,7 @@ import tech.lemnova.continuum.application.service.NoteService;
 import tech.lemnova.continuum.controller.dto.note.NoteCreateRequest;
 import tech.lemnova.continuum.controller.dto.note.NoteResponse;
 import tech.lemnova.continuum.controller.dto.note.NoteUpdateRequest;
-import tech.lemnova.continuum.domain.note.NoteSearchResult;
+import tech.lemnova.continuum.domain.note.Note;
 import tech.lemnova.continuum.infra.security.CustomUserDetails;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class NoteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Note>> list(@AuthenticationPrincipal CustomUserDetails user) {
-        return ResponseEntity.ok(noteService.list(user.getVaultId()));
+    public ResponseEntity<List<NoteResponse>> list(@AuthenticationPrincipal CustomUserDetails user) {
+        return ResponseEntity.ok(noteService.list(user.getVaultId()).stream().map(NoteResponse::from).toList());
     }
 }

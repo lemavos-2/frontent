@@ -4,16 +4,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import tech.lemnova.continuum.application.parser.MentionParser;
-import tech.lemnova.continuum.application.service.EntityIndexService;
-import tech.lemnova.continuum.domain.note.NoteIndex;
-import tech.lemnova.continuum.domain.user.User;
-import tech.lemnova.continuum.domain.user.UserRepository;
-import tech.lemnova.continuum.domain.plan.PlanConfiguration;
-import tech.lemnova.continuum.domain.plan.PlanType;
-import tech.lemnova.continuum.infra.vault.VaultStorageService;
-import tech.lemnova.continuum.infra.vault.VaultDataService;
+import tech.lemnova.continuum.application.parser.EntityParser;
+import tech.lemnova.continuum.domain.note.Note;
+import tech.lemnova.continuum.domain.NoteEntity;
+import tech.lemnova.continuum.domain.entity.Entity;
+import tech.lemnova.continuum.infra.persistence.NoteRepository;
+import tech.lemnova.continuum.infra.persistence.EntityRepository;
+import tech.lemnova.continuum.infra.persistence.NoteEntityRepository;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,58 +21,72 @@ import static org.mockito.Mockito.*;
 
 class NoteServiceUnitTest {
 
-    @Mock UserRepository userRepo;
-    @Mock VaultStorageService vaultStorage;
-    @Mock VaultDataService vaultData;
-    @Mock PlanConfiguration planConfig;
-    @Mock MentionParser mentionParser;
-    @Mock EntityIndexService entityIndexService;
+    @Mock NoteRepository noteRepo;
+    @Mock EntityRepository entityRepo;
+    @Mock NoteEntityRepository noteEntityRepo;
+    @Mock EntityParser entityParser;
 
     NoteService noteService;
-
-    User user;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        noteService = new NoteService(userRepo, vaultStorage, vaultData, planConfig, mentionParser, entityIndexService);
-
-        user = new User();
-        user.setId("u1");
-        user.setVaultId("vault1");
-        user.setPlan(PlanType.FREE);
-        user.setNoteCount(0);
-
-        when(userRepo.findById("u1")).thenReturn(Optional.of(user));
-        when(vaultData.readNoteIndex("vault1")).thenReturn(List.of());
-        when(planConfig.canCreateNote(any(), anyInt())).thenReturn(true);
+        noteService = new NoteService(noteRepo, entityRepo, noteEntityRepo, entityParser);
     }
 
     @Test
-    void listNotes_returnsEmptyList_whenVaultEmpty() {
-        // list(userId, folderId) — null folderId = sem filtro de pasta
-        var result = noteService.list("u1", null);
-        assertThat(result).isEmpty();
+    void create_savesNoteWithContent() {
+        String vaultId = "vault1";
+        Note savedNote = new Note();
+        savedNote.setId("n1");
+        savedNote.setVaultId(vaultId);
+        savedNote.setTitle("Test");
+        savedNote.setContent("Test content");
+        savedNote.setCreatedAt(Instant.now());
+
+        when(noteRepo.save(any(Note.class))).thenReturn(savedNote);
+        when(entityParser.parseEntities(anyString())).thenReturn(List.of());
+
+        var result = noteService.create(vaultId, new tech.lemnova.continuum.controller.dto.note.NoteCreateRequest("Test content", null));
+        
+        assertThat(result).isNotNull();
+        assertThat(result.id()).isEqualTo("n1");
+        assertThat(result.content()).isEqualTo("Test content");
     }
 
     @Test
-    void listNotes_returnsOnlyActiveNotes() {
-        NoteIndex active   = new NoteIndex();
-        active.setId("n1");
-        active.setUserId("u1");
-        active.setTitle("Active");
+    void get_returnsNoteForValidVaultAndId() {
+        String vaultId = "vault1";
+        String noteId = "n1";
+        Note note = new Note();
+        note.setId(noteId);
+        note.setVaultId(vaultId);
+        note.setTitle("Test");
+        note.setContent("Content");
 
-        NoteIndex archived = new NoteIndex();
-        archived.setId("n2");
-        archived.setUserId("u1");
-        archived.setTitle("Old");
-        archived.setArchivedAt(java.time.Instant.now().minusSeconds(3600));
+        when(noteRepo.findById(noteId)).thenReturn(Optional.of(note));
 
-        when(vaultData.readNoteIndex("vault1")).thenReturn(List.of(active, archived));
+        var result = noteService.get(vaultId, noteId);
+        
+        assertThat(result).isNotNull();
+        assertThat(result.id()).isEqualTo(noteId);
+    }
 
-        // list filtra apenas notas ativas (archivedAt == null)
-        var result = noteService.list("u1", null);
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).getId()).isEqualTo("n1");
+    @Test
+    void list_returnsAllNotesForVault() {
+        String vaultId = "vault1";
+        Note note1 = new Note();
+        note1.setId("n1");
+        note1.setVaultId(vaultId);
+        
+        Note note2 = new Note();
+        note2.setId("n2");
+        note2.setVaultId(vaultId);
+
+        when(noteRepo.findByVaultId(vaultId)).thenReturn(List.of(note1, note2));
+
+        var result = noteService.list(vaultId);
+        
+        assertThat(result).hasSize(2);
     }
 }
