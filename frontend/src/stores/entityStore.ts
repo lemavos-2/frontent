@@ -1,53 +1,30 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { create } from "zustand";
-import { entityService, type EntityCreatePayload, type EntityUpdatePayload } from "@/services/entityService";
-import type { Entity, EntityType } from "@/types/models";
-
-// Simple cache implementation
-class Cache<T> {
-  private cache = new Map<string, { data: T; timestamp: number }>();
-  private ttl: number;
-
-  constructor(ttlMs: number = 5 * 60 * 1000) { // 5 minutes default
-    this.ttl = ttlMs;
-  }
-
-  get(key: string): T | null {
-    const entry = this.cache.get(key);
-    if (!entry) return null;
-    if (Date.now() - entry.timestamp > this.ttl) {
-      this.cache.delete(key);
-      return null;
-    }
-    return entry.data;
-  }
-
-  set(key: string, data: T) {
-    this.cache.set(key, { data, timestamp: Date.now() });
-  }
-
-  clear() {
-    this.cache.clear();
-  }
-}
-
-// Debounce utility
-function debounce<T extends (...args: any[]) => any>(
-  func: T,
-  wait: number
-): (...args: Parameters<T>) => void {
-  let timeout: NodeJS.Timeout;
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
-}
+import { entityService } from "@/services/entityService";
+import type { Entity, Note } from "@/types/models";
 
 interface EntityState {
-  entities: Entity[];
-  isLoading: boolean;
-  searchCache: Cache<Entity[]>;
+  getEntity: (id: string) => Promise<Entity>;
+  getNotes: (id: string) => Promise<Note[]>;
+  getConnections: (id: string) => Promise<Entity[]>;
+}
+
+export const useEntityStore = create<EntityState>((set) => ({
+  getEntity: async (id) => {
+    return await entityService.get(id);
+  },
+
+  getNotes: async (id) => {
+    return await entityService.getNotes(id);
+  },
+
+  getConnections: async (id) => {
+    return await entityService.getConnections(id);
+  },
+}));
+
+// ─────────────────────────────────────────────────────────────────────────────
   fetch: (type?: EntityType) => Promise<void>;
   search: (q: string, type?: EntityType) => Promise<Entity[]>;
   debouncedSearch: (q: string, type?: EntityType) => Promise<Entity[]>;

@@ -1,53 +1,30 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
-export type EntityType = "PERSON" | "HABIT" | "PROJECT" | "EVENT" | "GOAL" | "DREAM" | "CUSTOM";
-export type PlanType = "FREE" | "PRO" | "VISION";
-export type SubscriptionStatus = "ACTIVE" | "PAST_DUE" | "CANCELED" | "TRIALING" | "INCOMPLETE";
-export type TrackingUnit = "COUNT" | "BOOLEAN" | "DURATION" | "NUMERIC";
-
-export interface TrackingConfig {
-  entityId?: string;
-  enabled?: boolean;
-  frequency?: string;
-  trackingUnit?: TrackingUnit;
-  targetValue?: number;
-  streakEnabled?: boolean;
-  allowDecimals?: boolean;
-  createdAt?: string;
-}
-
 export interface Entity {
   id: string;
-  name: string;
-  entityType: EntityType;
+  vaultId: string;
+  title: string;
   description?: string;
   createdAt: string;
-  archivedAt?: string;
-  tags?: string[];
 }
 
-export interface NoteReference {
+export interface Note {
   id: string;
-  noteId: string;
-  entityId: string;
-  createdAt: string;
-  archivedAt?: string;
-}
-
-// NoteIndex — list view (no content)
-export interface NoteIndex {
-  id: string;
-  userId: string;
+  vaultId: string;
   folderId?: string;
   title: string;
-  preview?: string;
+  content: string;
   createdAt: string;
   updatedAt: string;
-  archivedAt?: string;
 }
 
-// NoteSearchResult — search result with preview
-export interface NoteSearchResult extends NoteIndex {
+export interface NoteEntity {
+  noteId: string;
+  entityId: string;
+  position: number;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
   preview: string;
 }
 

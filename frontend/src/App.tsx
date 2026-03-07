@@ -11,9 +11,9 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import LoginPage from "@/pages/Login";
 import RegisterPage from "@/pages/Register";
 import EmailVerificationPage from "@/pages/EmailVerification";
-import DashboardPage from "@/pages/Dashboard";
-import JournalPage from "@/pages/Journal";
-import JournalEditorPage from "@/pages/JournalEditor";
+import NotesPage from "@/pages/notes/NotesPage";
+import EntityPage from "@/pages/entity/EntityPage";
+import GraphPage from "@/pages/graph/GraphPage";
 import HabitsPage from "@/pages/Habits";
 import AllEntitiesPage from "@/pages/AllEntities";
 import EntityCreatePage from "@/pages/EntityCreate";
@@ -45,9 +45,9 @@ function AppRoutes() {
           <ProtectedRoute>
             <AppLayout>
               <Routes>
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/journal" element={<JournalPage />} />
-                <Route path="/journal/new" element={<JournalEditorPage />} />
+                <Route path="/notes" element={<NotesPage />} />
+                <Route path="/entity/:id" element={<EntityPage />} />
+                <Route path="/graph" element={<GraphPage />} />
                 <Route path="/journal/:id" element={<JournalEditorPage />} />
                 <Route path="/habits" element={<HabitsPage />} />
                 <Route path="/entities" element={<AllEntitiesPage />} />

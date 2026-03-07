@@ -2,26 +2,25 @@
 
 import { create } from "zustand";
 import { noteService } from "@/services/noteService";
-import type { NoteIndex, NoteResponse } from "@/types/models";
+import type { Note } from "@/types/models";
 
 interface NoteState {
-  notes: NoteIndex[];
+  notes: Note[];
   isLoading: boolean;
-  fetch: (opts?: { folderId?: string; rootOnly?: boolean; days?: number }) => Promise<void>;
-  create: (content: string, folderId?: string) => Promise<NoteResponse>;
-  update: (id: string, content: string) => Promise<NoteResponse>;
-  archive: (id: string) => Promise<void>;
-  get: (id: string) => Promise<NoteResponse>;
+  fetch: () => Promise<void>;
+  create: (content: string, folderId?: string) => Promise<Note>;
+  update: (id: string, content: string) => Promise<Note>;
+  get: (id: string) => Promise<Note>;
 }
 
-export const useNoteStore = create<NoteState>((set) => ({
+export const useNoteStore = create<NoteState>((set, get) => ({
   notes: [],
   isLoading: false,
 
-  fetch: async (opts) => {
+  fetch: async () => {
     set({ isLoading: true });
     try {
-      const notes = await noteService.list(opts);
+      const notes = await noteService.list();
       set({ notes });
     } finally {
       set({ isLoading: false });
@@ -30,24 +29,25 @@ export const useNoteStore = create<NoteState>((set) => ({
 
   create: async (content, folderId) => {
     const note = await noteService.create(content, folderId);
-    set((s) => ({
-      notes: [
-        {
-          id: note.id,
-          userId: note.userId,
-          folderId: note.folderId,
-          title: note.title,
-          createdAt: note.createdAt,
-          updatedAt: note.updatedAt,
-        },
-        ...s.notes,
-      ],
-    }));
+    set((s) => ({ notes: [note, ...s.notes] }));
     return note;
   },
 
   update: async (id, content) => {
     const note = await noteService.update(id, content);
+    set((s) => ({
+      notes: s.notes.map((n) => (n.id === id ? note : n)),
+    }));
+    return note;
+  },
+
+  get: async (id) => {
+    const note = await noteService.get(id);
+    return note;
+  },
+}));
+
+// ─────────────────────────────────────────────────────────────────────────────
     set((s) => ({
       notes: s.notes.map((n) =>
         n.id === id
