@@ -41,7 +41,7 @@
   }
 
   ::selection {
-    background: theme('colors.accent.DEFAULT');
+    background: theme('colors.brand.DEFAULT');
     color: #fff;
   }
 }
@@ -53,7 +53,7 @@
 
   /* Drag and drop styles */
   .drag-over {
-    background-color: theme('colors.accent.DEFAULT');
+    background-color: theme('colors.brand.DEFAULT');
     opacity: 0.1;
   }
 

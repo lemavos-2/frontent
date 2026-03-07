@@ -36,6 +36,11 @@ export default {
         success: "#22c55e",
         warning: "#f59e0b",
         error: "#ef4444",
+        accent: {
+          DEFAULT: "#3ecf8e", // same as brand
+          secondary: "#4ec9b0", // teal
+          error: "#ef4444",
+        },
         background: {
           DEFAULT: "#0a0a0b",
           secondary: "#111111",
