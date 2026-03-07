@@ -20,6 +20,7 @@ import EntityDetailPage from "@/pages/EntityDetail";
 import ConnectionsPage from "@/pages/Connections";
 import SearchPage from "@/pages/Search";
 import SettingsPage from "@/pages/Settings";
+import UpgradePage from "@/pages/Upgrade";
 import LandingPage from "@/pages/Landing";
 
 const queryClient = new QueryClient({
