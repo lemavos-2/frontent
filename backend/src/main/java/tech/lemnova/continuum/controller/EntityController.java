@@ -42,46 +42,4 @@ public class EntityController {
             @PathVariable String id) {
         return ResponseEntity.ok(entityService.getConnections(user.getVaultId(), id));
     }
-    }
-
-    @GetMapping("/archived")
-    public ResponseEntity<List<Entity>> listArchived(@AuthenticationPrincipal CustomUserDetails user) {
-        return ResponseEntity.ok(entityService.listArchived(user.getUserId()));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Entity> get(
-            @AuthenticationPrincipal CustomUserDetails user, @PathVariable String id) {
-        return ResponseEntity.ok(entityService.get(user.getUserId(), id));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Entity> update(
-            @AuthenticationPrincipal CustomUserDetails user,
-            @PathVariable String id,
-            @RequestBody EntityUpdateRequest req) {
-        return ResponseEntity.ok(entityService.update(user.getUserId(), id, req));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> archive(
-            @AuthenticationPrincipal CustomUserDetails user, @PathVariable String id) {
-        entityService.archive(user.getUserId(), id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/{id}/permanent")
-    public ResponseEntity<Void> deletePermanent(
-            @AuthenticationPrincipal CustomUserDetails user, @PathVariable String id) {
-        entityService.deletePermanent(user.getUserId(), id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/{id}/restore")
-    public ResponseEntity<Entity> restore(
-            @AuthenticationPrincipal CustomUserDetails user, @PathVariable String id) {
-        return ResponseEntity.ok(entityService.restore(user.getUserId(), id));
-    }
 }
-
-// ─────────────────────────────────────────────────────────────────────────────

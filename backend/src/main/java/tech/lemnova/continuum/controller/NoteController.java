@@ -48,34 +48,4 @@ public class NoteController {
     public ResponseEntity<List<Note>> list(@AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.ok(noteService.list(user.getVaultId()));
     }
-            @PathVariable String id) {
-        return ResponseEntity.ok(noteService.get(user.getUserId(), id));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<NoteResponse> update(
-            @AuthenticationPrincipal CustomUserDetails user,
-            @PathVariable String id,
-            @RequestBody NoteUpdateRequest req) {
-        return ResponseEntity.ok(noteService.update(user.getUserId(), id, req));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> archive(
-            @AuthenticationPrincipal CustomUserDetails user,
-            @PathVariable String id) {
-        noteService.archive(user.getUserId(), id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/{id}/move")
-    public ResponseEntity<Void> move(
-            @AuthenticationPrincipal CustomUserDetails user,
-            @PathVariable String id,
-            @RequestBody Map<String, String> body) {
-        noteService.moveToFolder(user.getUserId(), id, body.get("folderId"));
-        return ResponseEntity.noContent().build();
-    }
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
