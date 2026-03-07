@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import api from "@/lib/api";
-import type { NoteIndex, NoteResponse } from "@/types/models";
+import type { NoteIndex, NoteResponse, NoteSearchResult } from "@/types/models";
 
 export const noteService = {
   // POST /api/notes — content + optional folderId
@@ -29,8 +29,8 @@ export const noteService = {
     return (await api.get<NoteIndex[]>("/api/notes/recent")).data;
   },
   // GET /api/notes/search?q=
-  async search(q: string): Promise<NoteIndex[]> {
-    return (await api.get<NoteIndex[]>("/api/notes/search", { params: { q } })).data;
+  async search(q: string): Promise<NoteSearchResult[]> {
+    return (await api.get<NoteSearchResult[]>("/api/notes/search", { params: { q } })).data;
   },
   // PATCH /api/notes/:id/move
   async move(id: string, folderId: string | null): Promise<void> {

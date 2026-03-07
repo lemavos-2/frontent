@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { entityService } from "@/services/entityService";
 import { noteService } from "@/services/noteService";
-import type { Entity, EntityType, NoteIndex } from "@/types/models";
+import type { Entity, EntityType, NoteSearchResult } from "@/types/models";
 import { Search as SearchIcon, ChevronRight, FileText } from "lucide-react";
 
 const TYPE_FILTER: { value: EntityType | "ALL"; label: string }[] = [
@@ -22,7 +22,7 @@ export default function SearchPage() {
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<EntityType | "ALL">("ALL");
   const [results, setResults] = useState<Entity[]>([]);
-  const [noteResults, setNoteResults] = useState<NoteIndex[]>([]);
+  const [noteResults, setNoteResults] = useState<NoteSearchResult[]>([]);
   const [loading, setLoading] = useState(false);
 
   const search = useCallback((q: string, type: EntityType | "ALL") => {
@@ -131,6 +131,11 @@ export default function SearchPage() {
                   <FileText className="h-4 w-4 text-[#555] shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-[#ddd] truncate">{n.title}</p>
+                    {n.preview && (
+                      <p className="text-xs text-[#666] mt-1 line-clamp-2 italic">
+                        {n.preview}
+                      </p>
+                    )}
                     <p className="text-[11px] text-[#555] font-mono">
                       {new Date(n.updatedAt).toLocaleDateString('pt-BR')}
                     </p>

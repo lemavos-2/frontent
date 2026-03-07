@@ -154,13 +154,23 @@ export default function JournalPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Journal</h1>
-        <button
-          onClick={() => navigate("/journal/new")}
-          className="flex items-center gap-2 bg-brand hover:bg-brand-dark text-background text-sm font-semibold px-4 py-2 rounded-md transition-colors touch-target"
-        >
-          <Plus className="h-4 w-4" />
-          Nova entrada
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setFolderModal({ type: "create" })}
+            className="flex items-center gap-2 px-3 py-2 text-sm text-brand hover:text-brand-dark transition-colors touch-target"
+            title="Criar nova pasta"
+          >
+            <FolderIcon className="h-4 w-4" />
+            Nova pasta
+          </button>
+          <button
+            onClick={() => navigate("/journal/new")}
+            className="flex items-center gap-2 bg-brand hover:bg-brand-dark text-background text-sm font-semibold px-4 py-2 rounded-md transition-colors touch-target"
+          >
+            <Plus className="h-4 w-4" />
+            Nova entrada
+          </button>
+        </div>
       </div>
 
       {/* Search */}
@@ -193,12 +203,6 @@ export default function JournalPage() {
                   }`}
                 >
                   Todas
-                </button>
-                <button
-                  onClick={() => setFolderModal({ type: "create" })}
-                  className="text-sm text-brand hover:text-brand-dark transition-colors"
-                >
-                  + pasta
                 </button>
               </div>
               <FolderList

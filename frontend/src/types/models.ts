@@ -46,6 +46,11 @@ export interface NoteIndex {
   archivedAt?: string;
 }
 
+// NoteSearchResult — search result with preview
+export interface NoteSearchResult extends NoteIndex {
+  preview: string;
+}
+
 // NoteResponse — full note with content
 export interface NoteResponse {
   id: string;
